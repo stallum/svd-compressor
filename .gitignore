@@ -53,3 +53,17 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# Compilação
+build/
+bin/
+
+# Sistema e Editores
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Dados (opcional: ignore as saídas pesadas)
+data/output
+/*
