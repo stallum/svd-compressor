@@ -67,3 +67,7 @@ bin/
 # Dados (opcional: ignore as saídas pesadas)
 data/output
 /*
+
+# Exemples
+.venv/
+
