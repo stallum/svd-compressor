@@ -18,3 +18,11 @@ build/%.o: src/%.c
 
 clean:
 	rm -rf build bin
+
+# Nova regra para rodar os testes
+test: all
+	$(CC) $(CFLAGS) src/test_matrix.c $(OBJ_DIR)/matrix.o -o bin/test_matrix $(LDFLAGS)
+	./bin/test_matrix
+
+testar: testar.c src/matrix.c
+	$(CC) $(CFLAGS) testar.c src/matrix.c -o testar $(LDFLAGS)
