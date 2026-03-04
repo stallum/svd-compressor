@@ -1,6 +1,7 @@
+# include <gsl/gsl_matrix.h>
 # include "matrix.h"
-#include <stdio.h>
-#include <stdlib.h>
+# include <stdio.h>
+# include <stdlib.h>
 
 // FUNÇÃO PARA CRIAR MATRIZ
 
@@ -49,7 +50,7 @@ void print_matrix(Matrix *mat) {
 
 // LIMPAR MATRIZ, LIMPA CADA UM DOS ELEMENTOS DE UMA MATRIZ
 
-void clean_matrix(Matrix *mat) {
+void free_matrix(Matrix *mat) {
     if (mat == NULL) return;
 
     for (int i = 0; i < mat->rows; i++) {

@@ -1,10 +1,10 @@
 #ifndef SVD_H
 #define SVD_H
 
-#include "matrix.h" // Importante: o SVD depende da nossa struct Matrix!
+# include "matrix.h" // Importante: o SVD depende da nossa struct Matrix!
 
 /**
- * STRUCT: CompressedSVD
+ * STRUCT: SVD
  * Guarda o resultado da compressão. Em vez de uma matriz gigante,
  * guardamos 3 matrizes menores que, multiplicadas, reconstroem a imagem.
  */
@@ -13,25 +13,25 @@ typedef struct {
     Matrix *U_reduced;   // Matriz U cortada
     Matrix *S_diagonal;  // Vetor/Matriz de valores singulares
     Matrix *Vt_reduced;  // Matriz V transposta cortada
-} CompressedSVD;
+} SVD;
 
 /**
  * FUNÇÃO DE COMPRESSÃO:
  * Recebe a imagem original e o nível de compressão 'k'.
  * Retorna a struct com as matrizes decompostas.
  */
-CompressedSVD* compress_image_svd(Matrix *original, int k);
+SVD* compress_image_svd(Matrix *original, int k);
 
 /**
  * FUNÇÃO DE RECONSTRUÇÃO:
  * Pega as matrizes menores e multiplica elas para voltar a ser uma imagem.
  */
-Matrix* reconstruct_from_svd(CompressedSVD *compressed);
+Matrix* reconstruct_from_svd(SVD *compressed);
 
 /**
  * LIMPEZA:
- * Libera a memória de todas as matrizes dentro da struct CompressedSVD.
+ * Libera a memória de todas as matrizes dentro da struct SVD.
  */
-void free_compressed_svd(CompressedSVD *compressed);
+void free_compressed_svd(SVD *compressed);
 
 #endif

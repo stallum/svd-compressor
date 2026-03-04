@@ -32,7 +32,7 @@ Matrix* multiply_matrices(Matrix *A, Matrix *B);
  * GERENCIAMENTO DE MEMÓRIA: Libera toda a memória alocada.
  * Essencial para não deixar "lixo" na memória (Memory Leaks).
  */
-void clean_matrix(Matrix *mat);
+void free_matrix(Matrix *mat);
 
 /**
  * MANIPULAÇÃO POR PONTEIROS: Define um valor em uma coordenada específica.
