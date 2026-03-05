@@ -42,4 +42,12 @@ void free_svd_image(Image *img);
  */
 Image* read_image ();
 
+/**
+ * Salva a imagem comprimida
+ */
+
+// Image* save_image(Image* i);
+
+
+
 #endif // IMAGE_IO_H

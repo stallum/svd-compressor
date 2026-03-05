@@ -17,22 +17,28 @@ gsl_matrix* gsl_matrix_transpose_new(const gsl_matrix *m) {
 
 gsl_matrix* reconstruct_channel(gsl_matrix *U, gsl_vector *S, gsl_matrix *V, int r) {
     if (!U || !S || !V) return NULL;
-    int h = U->size1;
-    int w = V->size1; // V é quadrada n x n
     
+    int h = U->size1;
+    int w = V->size1; 
+
     gsl_matrix *res = gsl_matrix_alloc(h, w);
     if (!res) return NULL;
-    gsl_matrix_set_zero(res);
 
-    for (int i = 0; i < h; i++) {
-        for (int j = 0; j < w; j++) {
-            double pixel_val = 0.0;
-            for (int k = 0; k < r; k++) {
-                pixel_val += gsl_matrix_get(U, i, k) * gsl_vector_get(S, k) * gsl_matrix_get(V, j, k);
-            }
-            gsl_matrix_set(res, i, j, pixel_val);
-        }
+    gsl_matrix_const_view Ur = gsl_matrix_const_submatrix(U, 0, 0, h, r);
+    gsl_matrix_const_view Vr = gsl_matrix_const_submatrix(V, 0, 0, w, r);
+    gsl_matrix *Vr_scaled = gsl_matrix_alloc(w, r);
+    gsl_matrix_memcpy(Vr_scaled, &Vr.matrix);
+    
+    for (int j = 0; j < r; j++) {
+        double sj = gsl_vector_get(S, j);
+        gsl_vector_view col = gsl_matrix_column(Vr_scaled, j);
+        gsl_vector_scale(&col.vector, sj);
     }
+
+    gsl_blas_dgemm(CblasNoTrans, CblasTrans, 1.0, &Ur.matrix, Vr_scaled, 0.0, res);
+
+    gsl_matrix_free(Vr_scaled);
+
     return res;
 }
 
@@ -43,6 +49,8 @@ void process_and_compress(Image *img, int r) {
     int w = img->width;
     int is_landscape = (h < w);
 
+
+    #pragma omp parallel for
     for (int k = 0; k < img->channels; k++) {
         gsl_matrix *A_work = NULL;
         
@@ -72,7 +80,7 @@ void process_and_compress(Image *img, int r) {
 
         // Reconstrói a partir dos componentes
         gsl_matrix *reconstructed = reconstruct_channel(A_work, S, V, r_adj);
-        
+        printf("reconstruido canal %d\n", k);
         if (reconstructed) {
             if (is_landscape) {
                 // Se era landscape, a reconstrução está em (w x h), transpomos de volta

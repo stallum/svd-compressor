@@ -2,9 +2,11 @@
 #include <gsl/gsl_matrix.h>
 #include "image_io.h" // Seus headers do projeto
 #include "svd.h"
+#include <time.h>
 
 
 int main() {
+    clock_t inicio = clock();
     // 1. Carrega a imagem
     Image* img = read_image();
     if (img == NULL) return 1;
@@ -20,6 +22,11 @@ int main() {
     // 3. Limpeza total de memória (Regra de Ouro)
     free_svd_image(img);
     printf("Memoria liberada. Fim do programa.\n");
+    clock_t fim = clock();
+
+    double tempo_cpu = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+
+    printf("Tempo de execucao: %f segundos\n", tempo_cpu);
     
     return 0;
 }

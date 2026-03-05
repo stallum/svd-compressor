@@ -1,6 +1,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "image_io.h"
+#include "stb_image_write.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <gsl/gsl_matrix.h>
@@ -35,7 +36,7 @@ Image* convert_stb_to_gsl(unsigned char *stb_data, int w, int h, int c) {
 Image* read_image () {
 
     int width, height, channels;
-    const char* filename = "./Example/luna.jpg"; // Supports JPEG, PNG, BMP, TGA, PSD, GIF, HDR, PIC, PNM
+    const char* filename = "./Example/luna.jpeg"; // Supports JPEG, PNG, BMP, TGA, PSD, GIF, HDR, PIC, PNM
 
     // Load the image
     unsigned char* image_data = stbi_load(filename, &width, &height, &channels, 0);
@@ -74,4 +75,30 @@ void free_svd_image(Image *img) {
         free(img);
     }
 }
+
+// void save_image(Image* i) {
+
+//     int w = i->width;
+//     int h = i->height;
+//     int c = i->channels;
+
+//     for (int y = 0; y < c; y++) {
+//         for (int k = 0; k < h; k++) {
+//             for (int j = 0; j < w; j++) {
+//                 gsl_matrix *m = i->channels_matrices[k];
+
+//             }
+
+            
+            
+            
+//         }
+
+//     }
+    
+//     stbi_write_jpg("compress.jpg", i->width, i->height, i->channels, gsl_matrix_ptr(m, 0, 0), 100);
+//     printf("Imagem salva como compress.jpg\n");
+
+
+// }
 
