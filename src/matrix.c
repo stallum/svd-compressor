@@ -38,13 +38,12 @@ Matrix* create_matrix (int rows, int cols) {
 
 // FUNÇÃO PARA MOSTRAR A MATRIZ
 
-void print_matrix(Matrix *mat) {
-    for (int i = 0; i < mat->rows; i++) {
-        printf("[ ");
-        for (int j = 0; j < mat->cols; j++) {
-            printf("%.2f ", mat->data[i][j]);
+void print_matrix(gsl_matrix *m) {
+    for (size_t i = 0; i < m->size1; i++) {
+        for (size_t j = 0; j < m->size2; j++) {
+            printf("%f ", gsl_matrix_get(m, i, j));
         }
-        printf("]\n");
+        printf("\n");
     }
 }
 

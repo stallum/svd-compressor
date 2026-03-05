@@ -1,11 +1,25 @@
 #include <stdio.h>
 #include <gsl/gsl_matrix.h>
 #include "image_io.h" // Seus headers do projeto
+#include "svd.h"
+
 
 int main() {
-    // criar lógica de interface com terminal. 
-    // enviar imagem com GUI | enviar imagem com diretório?
+    // 1. Carrega a imagem
+    Image* img = read_image();
+    if (img == NULL) return 1;
+
+    // 2. Define o nível de compressão (k)
+    // Se a imagem tem 500 colunas, k=50 mantém os 50 principais valores singulares
+    int k = 20; 
+    printf("Iniciando compressao SVD (k=%d)...\n", k);
     
+    // Chama a função que você implementou no svd.c
+    process_and_compress(img, k);
+
+    // 3. Limpeza total de memória (Regra de Ouro)
+    free_svd_image(img);
+    printf("Memoria liberada. Fim do programa.\n");
     
     return 0;
 }

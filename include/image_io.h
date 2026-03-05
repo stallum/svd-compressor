@@ -3,6 +3,7 @@
 
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_linalg.h>
+#include "matrix.h"
 
 /* * Estrutura para armazenar a imagem decomposta em canais GSL.
  * Atende aos requisitos de Struct e Ponteiros.
@@ -35,5 +36,10 @@ void compress_image_svd(Image *img, double k_percent);
  * Libera toda a memória alocada dinamicamente para a imagem.
  */
 void free_svd_image(Image *img);
+
+/**
+ * Lê a imagem a partir do caminho destinado.
+ */
+Image* read_image ();
 
 #endif // IMAGE_IO_H

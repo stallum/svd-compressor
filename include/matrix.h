@@ -42,6 +42,6 @@ void set_value(Matrix *mat, int r, int c, double value);
 /**
  * UTILITÁRIO: Apenas para testar se a matriz foi criada corretamente.
  */
-void print_matrix(Matrix *mat);
+void print_matrix(gsl_matrix *m);
 
 #endif

@@ -54,7 +54,7 @@ void process_and_compress(Image *img, int r) {
             gsl_matrix_memcpy(A_work, img->channels_matrices[k]);
         }
 
-        int M = A_work->size1; // Nova altura (pode ser w se for landscape)
+        // int M = A_work->size1; // Nova altura (pode ser w se for landscape)
         int N = A_work->size2; // Nova largura (pode ser h se for landscape)
         int r_adj = (r > N) ? N : r;
 
