@@ -2,6 +2,7 @@
 #define SVD_H
 
 # include "matrix.h" // Importante: o SVD depende da nossa struct Matrix!
+#include <gsl/gsl_matrix.h>
 
 /**
  * STRUCT: SVD
@@ -20,7 +21,7 @@ typedef struct {
  * Recebe a imagem original e o nível de compressão 'k'.
  * Retorna a struct com as matrizes decompostas.
  */
-SVD* compress_image_svd(Matrix *original, int k);
+SVD* compress_image_svd(gsl_matrix *original, int k);
 
 /**
  * FUNÇÃO DE RECONSTRUÇÃO:
