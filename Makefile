@@ -10,10 +10,13 @@ TARGET = $(BIN_DIR)/compressor
 
 # Configurações da GSL e Compilador
 GSL_FLAGS = $(shell gsl-config --cflags)
-GSL_LIBS  = $(shell gsl-config --libs | sed 's/-lgslcblas//') # Remove a CBLAS padrão da GSL
+GSL_LIBS  = $(shell gsl-config --libs | sed 's/-lgslcblas//')
+
 CC = gcc
 CFLAGS = -Wall -Wextra -O3 -march=native -fopenmp -g -Iinclude $(GSL_FLAGS)
-LDFLAGS = -lopenblas $(GSL_LIBS) -lpthread -lm -fopenmp
+
+# Added JPEG and PNG here
+LDFLAGS = -lopenblas $(GSL_LIBS) -ljpeg -lpng -lpthread -lm -fopenmp
 
 # Regra principal
 all: $(TARGET)

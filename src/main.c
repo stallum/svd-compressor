@@ -1,32 +1,159 @@
 #include <stdio.h>
-#include <gsl/gsl_matrix.h>
-#include "image_io.h" // Seus headers do projeto
-#include "svd.h"
-#include <time.h>
+#include <string.h>
+#include <stdlib.h>
+#include "huffman.h"
+#include "image.h"
 
+Image loadImage(const char *filename){
 
-int main() {
-    clock_t inicio = clock();
-    // 1. Carrega a imagem
-    Image* img = read_image();
-    if (img == NULL) return 1;
+    char *ext = strrchr(filename,'.');
 
-    // 2. Define o nível de compressão (k)
-    // Se a imagem tem 500 colunas, k=50 mantém os 50 principais valores singulares
-    int k = 20; 
-    printf("Iniciando compressao SVD (k=%d)...\n", k);
+    if(!ext){
+        printf("Unknown format\n");
+        exit(1);
+    }
+
+    if(strcmp(ext,".ppm")==0)
+        return loadPPM(filename);
+
+    if(strcmp(ext,".jpg")==0 || strcmp(ext,".jpeg")==0)
+        return loadJPEG(filename);
+
+    if(strcmp(ext,".png")==0)
+        return loadPNG(filename);
+
+    printf("Unsupported format\n");
+    exit(1);
+}
+
+/* remove extensão do arquivo */
+void getBaseName(const char *input,char *base){
+
+    strcpy(base,input);
+
+    char *dot = strrchr(base,'.');
+
+    if(dot)
+        *dot = '\0';
+}
+
+/* leitura segura de linha */
+void readLine(char *buffer,int size){
+
+    fgets(buffer,size,stdin);
+
+    buffer[strcspn(buffer,"\n")] = 0;
+}
+
+int main(){
+
+    int option;
+
+    char input[256];
+    char output[256];
+    char base[256];
+
+    char line[32];
+
+    printf("=================================\n");
+    printf("        IMAGE COMPRESSOR\n");
+    printf("=================================\n");
+    printf("1 - Compress Image\n");
+    printf("2 - Decompress Image\n");
+    printf("3 - Exit\n");
+    printf("Choose option: ");
+
+    fgets(line,sizeof(line),stdin);
+    option = atoi(line);
+
+    while (option != 3) {
+
+        if(option == 1){
     
-    // Chama a função que você implementou no svd.c
-    process_and_compress(img, k);
-
-    // 3. Limpeza total de memória (Regra de Ouro)
-    free_svd_image(img);
-    printf("Memoria liberada. Fim do programa.\n");
-    clock_t fim = clock();
-
-    double tempo_cpu = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
-
-    printf("Tempo de execucao: %f segundos\n", tempo_cpu);
+            printf("Input file: ");
+            readLine(input, 256);
     
+            printf("Output file (press Enter for default): ");
+            readLine(output, 256);
+    
+            if(strlen(output) == 0){
+    
+                getBaseName(input,base);
+                sprintf(output,"compressed_%s.ppm",base);
+    
+                printf("Default output: %s\n",output);
+            }
+    
+            Image img = loadImage(input);
+    
+            int freq[256] = {0};
+    
+            countRGBFrequency(&img,freq);
+    
+            Node* root = buildHuffmanTree(freq);
+    
+            HuffCode codes[256] = {0};
+    
+            buildCodes(root,0,0,codes);
+    
+            int format;
+    
+            char *ext = strrchr(input, '.');
+    
+            if(strcmp(ext,".jpg")==0 || strcmp(ext,".jpeg")==0)
+                format = 1;
+    
+            else if(strcmp(ext,".png")==0)
+                format = 2;
+    
+            else
+                format = 3;
+    
+            compressRGB(&img,output,codes,freq,format);
+    
+            freeImage(&img);
+    
+            printf("Compression finished\n");
+
+            fgets(line,sizeof(line),stdin);
+            option = atoi(line);
+
+        }
+    
+        else if(option == 2){
+    
+            printf("Input file: ");
+            readLine(input, 256);
+    
+            printf("Output file (press Enter for default): ");
+            readLine(output, 256);
+    
+            if(strlen(output) == 0){
+    
+                getBaseName(input, base);
+                sprintf(output, "%s.jpg", base);
+    
+                printf("Default output: %s\n", output);
+            }
+    
+            decompressRGB(input,output);
+    
+            printf("Decompression finished\n");
+
+            fgets(line,sizeof(line),stdin);
+            option = atoi(line);
+        }
+    
+        else if(option == 3){
+    
+            printf("Exiting program\n");
+        }
+    
+        else{
+    
+            printf("Invalid option\n");
+        }
+    }
+
     return 0;
 }
