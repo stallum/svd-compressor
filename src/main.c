@@ -42,6 +42,7 @@ void arquivo_selecionado(GtkFileDialog *dialog, GAsyncResult *result, gpointer d
 
     if (file != NULL) {
         char *input_path = g_file_get_path(file);
+        const char *downloads = g_get_user_special_dir(G_USER_DIRECTORY_DOWNLOAD);
         
         char base[512];
         char ext_str[32] = "";
@@ -54,7 +55,11 @@ void arquivo_selecionado(GtkFileDialog *dialog, GAsyncResult *result, gpointer d
 
         snprintf(output_huf, sizeof(output_huf), "%s.huf", base);
         
-        snprintf(output_comprimida, sizeof(output_comprimida), "%s_comprimida%s", base, ext_str);
+        snprintf(output_comprimida, sizeof(output_comprimida),
+         "%s/%s_comprimida%s",
+         downloads,
+         g_path_get_basename(base),
+         ext_str);
 
         g_print("\n========================================\n");
         g_print("Iniciando processo para: %s\n", input_path);
@@ -84,6 +89,12 @@ void arquivo_selecionado(GtkFileDialog *dialog, GAsyncResult *result, gpointer d
         g_print("[2/2] Lendo o .huf e recriando a imagem original...\n");
         
         decompressRGB(output_huf, output_comprimida);
+
+        if (remove(output_huf) == 0) {
+            g_print("Arquivo temporario %s removido.\n", output_huf);
+        } else {
+            g_print("Erro ao remover o arquivo temporario %s.\n", output_huf);
+}
         
         g_print("      -> Imagem salva como: %s\n", output_comprimida);
         g_print("========================================\n");
