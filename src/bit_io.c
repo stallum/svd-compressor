@@ -8,7 +8,7 @@ void init_BitWriter(BitWriter* bw, FILE* f) {
 }
 
 void write_bit(BitWriter* bw, int bit) {
-    bw->buffer <<= 1;
+    bw->buffer <<= 1; // 00000000
 
     bw->buffer |= bit;
     bw->bit_count++;

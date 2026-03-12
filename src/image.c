@@ -155,7 +155,7 @@ void saveJPEG(const char* filename, Image* img){
         printf("Cannot create JPEG file\n");
         exit(1);
     }
-struct jpeg_compress_struct cinfo;
+    struct jpeg_compress_struct cinfo;
     struct jpeg_error_mgr jerr;
 
     cinfo.err = jpeg_std_error(&jerr);
