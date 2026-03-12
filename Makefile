@@ -6,17 +6,21 @@ SRC_DIR = src
 # Variáveis de arquivos
 SRC = $(wildcard $(SRC_DIR)/*.c)
 OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-TARGET = $(BIN_DIR)/compressor
+TARGET = $(BIN_DIR)/compressor.exe  #.exe só no windows, no linux tem que tirar
+# cd /c/Users/user/Documents/GitHub/compressor  para achar o caminho no ucrt(windows)
+# GSK_RENDERER=cairo  mudar o renderezidor, se n mudar da erro
 
-# Configurações da GSL e Compilador
+# Configurações da GSL, GTK4 e Compilador
 GSL_FLAGS = $(shell gsl-config --cflags)
 GSL_LIBS  = $(shell gsl-config --libs | sed 's/-lgslcblas//')
+GTK_CFLAGS = $(shell pkg-config --cflags gtk4)
+GTK_LIBS   = $(shell pkg-config --libs gtk4)
 
 CC = gcc
-CFLAGS = -Wall -Wextra -O3 -march=native -fopenmp -g -Iinclude $(GSL_FLAGS)
 
-# Added JPEG and PNG here
-LDFLAGS = -lopenblas $(GSL_LIBS) -ljpeg -lpng -lpthread -lm -fopenmp
+CFLAGS = -Wall -Wextra -O3 -march=native -fopenmp -g -Iinclude $(GSL_FLAGS) $(GTK_CFLAGS)
+
+LDFLAGS = -lopenblas $(GSL_LIBS) -ljpeg -lpng -lpthread -lm -fopenmp $(GTK_LIBS)
 
 # Regra principal
 all: $(TARGET)
