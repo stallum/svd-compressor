@@ -1,1 +1,0 @@
-That archive is use for getting images and other data.

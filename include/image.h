@@ -1,6 +1,8 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
+# include <stdio.h>
+
 typedef struct {
 
     int width;
@@ -22,4 +24,4 @@ void freeImage(Image *img);
 
 
 
-#endif
+#endif //IMAGE_H

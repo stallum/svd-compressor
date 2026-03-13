@@ -37,8 +37,4 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 
 # Limpeza
 clean:
-	rm -rf $(OBJ_DIR) $(BIN_DIR) testar image_io
-
-# Regra para rodar os testes
-testar: testar.c $(SRC_DIR)/matrix.c
-	$(CC) $(CFLAGS) testar.c $(SRC_DIR)/matrix.c -o testar $(LDFLAGS)
+	rm -rf $(OBJ_DIR) $(BIN_DIR) 
