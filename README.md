@@ -1,80 +1,183 @@
-🖼️ Compressor de Imagem SVD
+# Huffman Image Compressor
 
-Este projeto é um sistema de compressão de imagens em tons de cinza e coloridas (RGB) utilizando a técnica matemática de Decomposição em Valores Singulares (SVD). Desenvolvido em C, o projeto foca em manipulação eficiente de memória através de ponteiros e integração com bibliotecas de álgebra linear.
+Huffman Image Compressor é uma aplicação em C com interface gráfica construída usando GTK que realiza compressão lossless de imagens utilizando o algoritmo Huffman Coding.
 
-A ideia central é reduzir a redundância de dados representando a matriz da imagem A como o produto de três matrizes:
-A=UΣVT
+O programa suporta imagens nos formatos:
 
-A compressão ocorre ao mantermos apenas os k valores singulares mais significativos de Σ, descartando informações menos relevantes e reduzindo o peso do arquivo final.
-📂 Estrutura do Projeto
+* JPEG
+* PNG
+* PPM
 
-De acordo com a organização atual do diretório:
-Diretório/Arquivo	Descrição
-src/	Arquivos fonte .c (Lógica principal, IO de imagem e matrizes).
-include/	Cabeçalhos .h (Definições de structs e protótipos).
-bin/	Executáveis gerados (ex: compressor).
-build/	Objetos compilados .o (Arquivos temporários).
-Example/	Imagens de teste (como o luna.jpg).
-data/ / docs/	Documentação adicional e logs de dados.
-Makefile	Script de automação da compilação.
-🛠️ Requisitos e Instalação
+A compressão média observada no projeto é de aproximadamente 50% de redução de tamanho, sem perda de qualidade, pois o algoritmo Huffman é lossless.
 
-O projeto depende da GSL (GNU Scientific Library) para os cálculos de SVD e da stb_image (já inclusa em include/) para manipulação de arquivos de imagem.
-🐧 No Linux (Ubuntu/Debian/Fedora)
+## Como executar o projeto
 
-    Instalar dependências:
-    Bash
-    
-    # Ubuntu/Debian
-    sudo apt update && sudo apt install build-essential libgsl-dev
-    
-    # Fedora
-    
-    sudo dnf install gcc make gsl-devel
-    
-    Compilar o projeto:
+### 1. Instalar dependências
 
-    make
-    Executar:
+Em sistemas Linux (Ubuntu/Debian):
+
+```bash
+sudo apt update
+sudo apt install build-essential libgtk-4-dev libjpeg-dev libpng-dev
+```
+
+Em sistemas Fedora (Workstation):
+
+```bash
+sudo dnf update
+sudo dnf install gcc make gtk4-devel libjpeg-turbo-devel libpng-devel
+
+Bibliotecas utilizadas:
+
+* GTK (GTK4)
+* libjpeg
+* libpng
+
+### 2. Compilar o projeto
+
+O projeto utiliza Makefile para automação de compilação.
+
+Execute:
+
+```bash
+make
+```
+
+Isso irá gerar o executável na pasta:
+
+`bin/compressor`
+
+### 3. Executar o programa
+
+```bash
+./bin/compressor
+```
+
+Ao executar, uma interface gráfica será aberta.
 
 
-    ./bin/compressor
-🪟 No Windows
+## Interface Gráfica
 
-A maneira mais estável de rodar este projeto no Windows é via WSL2 (Windows Subsystem for Linux) ou MSYS2.
+A interface foi desenvolvida utilizando GTK.
 
-Via MSYS2 (UCRT64):
+Ela contém dois botões principais:
 
-    Abra o terminal do MSYS2 UCRT64.
+### Comprimir imagem
 
-    Instale o compilador e a GSL:
-    Bash
+Abre um seletor de arquivos permitindo escolher uma imagem suportada.
 
-    pacman -S mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-make mingw-w64-ucrt-x86_64-gsl
+O programa então:
 
-    No diretório do projeto, compile usando:
-    Bash
+1. lê a imagem
+2. gera um arquivo comprimido .huf
+3. reconstrói a imagem comprimida
+4. salva a imagem final na pasta Downloads
 
-    mingw32-make
+### Sair
 
-🚀 Como Funciona a Compilação
+Fecha a aplicação.
 
-O Makefile automatizado gerencia as dependências. Os principais comandos são:
 
-    make: Compila o programa principal e gera o binário em bin/.
+## Estrutura do projeto
 
-    make testar: Compila o arquivo testar.c para verificações rápidas de funções de matriz.
+```
+Huffman Image Compressor
+│
+├── include
+│   ├── bit_io.h
+│   ├── huffman.h
+│   └── image.h
+│
+├── src
+│   ├── bit_io.c
+│   ├── huffman.c
+│   ├── image.c
+│   └── main.c
+│
+├── bin
+│   └── compressor
+│
+├── Makefile
+└── README.md
+```
 
-    make clean: Remove as pastas build/ e bin/ para uma compilação limpa.
+## Fluxo de compressão
 
-🤝 Colaboração e Regras do Projeto
+Quando uma imagem é selecionada, o processo ocorre da seguinte forma:
 
-Este projeto foi desenvolvido seguindo padrões acadêmicos de Ciência da Computação:
+```
+Imagem original
+      │
+      ▼
+Leitura da imagem (PNG/JPEG/PPM)
+      │
+      ▼
+Contagem de frequência dos bytes
+      │
+      ▼
+Construção da árvore de Huffman
+      │
+      ▼
+Codificação binária dos dados
+      │
+      ▼
+Arquivo temporário .huf
+      │
+      ▼
+Descompressão automática
+      │
+      ▼
+Imagem comprimida salva
+```
 
-    Gerenciamento de Memória: Toda matriz alocada deve ser liberada via free_matrix ou free_svd_image para evitar memory leaks.
+O arquivo .huf é apenas um formato intermediário e é removido após a reconstrução da imagem.
 
-    Modularização: A lógica de álgebra linear está isolada em matrix.c, enquanto a compressão reside em svd.c.
+## Algoritmo de Huffman
 
-    Portabilidade: O uso de gsl-config no Makefile garante que os caminhos das bibliotecas sejam encontrados automaticamente no Linux.
+O algoritmo Huffman Coding é um método de compressão sem perda baseado na frequência dos símbolos.
 
-    Nota: O projeto utiliza a biblioteca stb_image.h para suporte a formatos .jpg, .png e .bmp. Certifique-se de que as imagens de teste estejam na pasta Example/.
+Funcionamento simplificado:
+
+1. Conta quantas vezes cada valor aparece nos dados
+2. Constrói uma árvore binária baseada nessas frequências
+3. Atribui códigos binários menores para símbolos mais frequentes
+4. Substitui os dados originais pelos códigos
+
+Exemplo:
+
+| Valor | Frequência | Código |
+|-------|------------|--------|
+| A     | 50         | 0      |
+| B     | 25         | 10     |
+| C     | 25         | 11     |
+
+Como valores frequentes usam menos bits, o tamanho total dos dados diminui.
+
+## Formato do arquivo .huf
+
+Durante a compressão, é gerado um arquivo intermediário:
+
+`imagem.huf`
+
+Ele contém:
+
+* header
+* informações da imagem
+* tabela de frequência
+* dados comprimidos em bits
+
+Esse arquivo é utilizado para reconstruir a imagem final e é removido automaticamente após o processo.
+
+## Resultados de compressão
+
+Em testes realizados no projeto:
+
+| Imagem | Tamanho original | Tamanho comprimido | Redução |
+|--------|------------------|--------------------|---------|
+| PNG    | 5.2 MB           | 2.5 MB             | ~50%    |
+| JPEG   | 2.9 MB           | 1.5 MB             | ~50%    |
+
+A compressão é lossless, ou seja:
+
+* ✔ quase nenhuma perda de qualidade
+* ✔ pixels quase idênticos ao original
